@@ -1,0 +1,32 @@
+# build output and generated types
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# secrets: never commit
+.env
+.env.*
+!.env.example
+
+# terraform: state can contain secrets, and this repo is public
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+!.terraform.lock.hcl
+
+# tooling caches
+.wrangler/
+.sanity/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
