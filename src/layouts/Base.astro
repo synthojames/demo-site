@@ -1,0 +1,21 @@
+---
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header>
+      <nav><a href="/">ホーム</a> | <a href="/news">お知らせ</a></nav>
+    </header>
+    <main><slot /></main>
+    <footer><small>株式会社サンプルマーケット(デモサイト)</small></footer>
+  </body>
+</html>
