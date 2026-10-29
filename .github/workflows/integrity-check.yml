@@ -1,0 +1,46 @@
+name: Integrity check
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: integrity-check
+  cancel-in-progress: false
+
+env:
+  SITE_URL: https://corp-site-demo.synthocmsdomaintest.workers.dev
+
+jobs:
+  verify:
+    name: Compare live site to manifest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release download integrity-manifest --pattern manifest.json --dir .
+
+      - name: Compare live site (one retry in case a deploy is in progress)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if ! bash scripts/verify-manifest.sh "$SITE_URL" manifest.json; then
+            echo "First check failed; retrying in 90 seconds in case a deploy is in progress"
+            sleep 90
+            gh release download integrity-manifest --pattern manifest.json --dir . --clobber
+            bash scripts/verify-manifest.sh "$SITE_URL" manifest.json
+          fi
