@@ -1,7 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
+import {client} from '../lib/sanity';
+
+const page = await client.fetch(
+  '*[_type == "page" && slug.current == $slug][0]{headline, body}',
+  {slug: 'home'},
+);
+
+if (!page) {
+  throw new Error('Sanity: published page "home" not found');
+}
 ---
 <Base title="株式会社サンプルマーケット">
-  <h1>暮らしに、ちょうどいい市場を。</h1>
-  <p>サンプルマーケットは、全国のお客様と生産者をつなぐマーケットプレイスです。</p>
+  <h1>{page.headline}</h1>
+  <p>{page.body}</p>
 </Base>
