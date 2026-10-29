@@ -76,3 +76,36 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  record:
+    name: Record integrity manifest
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    permissions:
+      contents: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download site artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site-dist
+          path: dist
+
+      - name: Build manifest
+        env:
+          SHA: ${{ github.sha }}
+        run: bash scripts/make-manifest.sh dist "$SHA" > manifest.json
+
+      - name: Publish manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release view integrity-manifest >/dev/null 2>&1 || \
+            gh release create integrity-manifest --prerelease --title "Integrity manifest" --notes "Written by the deploy workflows. Do not edit by hand."
+          gh release upload integrity-manifest manifest.json --clobber
