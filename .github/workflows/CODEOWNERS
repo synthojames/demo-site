@@ -1,0 +1,9 @@
+# IT owns everything by default. Every PR needs IT approval.
+*                   @synthojames
+
+# Sensitive paths. In production these lines would also name the Sec team.
+/.github/           @synthojames
+/terraform/         @synthojames
+/wrangler.jsonc     @synthojames
+/package.json       @synthojames
+/package-lock.json  @synthojames
