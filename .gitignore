@@ -30,3 +30,7 @@ crash.log
 .DS_Store
 Thumbs.db
 .idea/
+
+# terraform saved plans
+tfplan
+*.tfplan
