@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import {client} from '../lib/sanity';
+
+export async function getStaticPaths() {
+  // getStaticPaths cannot see variables from the frontmatter, so these live inside it.
+  const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const RESERVED = new Set(['news']); // real routes a CMS page must not shadow
+
+  const pages = await client.fetch(
+    '*[_type == "page" && defined(slug.current)]{"slug": slug.current, headline, body}',
+  );
+
+  const seen = new Set<string>();
+  const paths = [];
+  for (const p of pages) {
+    if (p.slug === 'home') continue; // home is served at / by index.astro
+    if (!SLUG.test(p.slug)) {
+      throw new Error(`Sanity: page slug "${p.slug}" must be lowercase letters, digits and hyphens`);
+    }
+    if (RESERVED.has(p.slug)) {
+      throw new Error(`Sanity: page slug "${p.slug}" collides with a built-in route`);
+    }
+    if (seen.has(p.slug)) {
+      throw new Error(`Sanity: duplicate page slug "${p.slug}"`);
+    }
+    seen.add(p.slug);
+    paths.push({params: {slug: p.slug}, props: {page: p}});
+  }
+  return paths;
+}
+
+const {page} = Astro.props;
+---
+<Base title={page.headline}>
+  <h1>{page.headline}</h1>
+  <p>{page.body}</p>
+</Base>
