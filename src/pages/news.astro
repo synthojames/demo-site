@@ -1,9 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
+import {client} from '../lib/sanity';
+
+type NewsItem = {_id: string; title: string; publishedAt: string};
+
+const items: NewsItem[] = await client.fetch(
+  '*[_type == "newsItem"] | order(publishedAt desc){_id, title, publishedAt}',
+);
 ---
 <Base title="お知らせ | 株式会社サンプルマーケット">
   <h1>お知らせ</h1>
   <ul>
-    <li>2026年10月28日 コーポレートサイトをリニューアルしました。</li>
+    {items.map((item) => (
+      <li>{item.publishedAt} {item.title}</li>
+    ))}
   </ul>
 </Base>
