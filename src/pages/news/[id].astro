@@ -1,16 +1,28 @@
 ---
+import type {GetStaticPaths} from 'astro';
 import Base from '../../layouts/Base.astro';
 import {client} from '../../lib/sanity';
 
-export async function getStaticPaths() {
-  const items = await client.fetch(
-    '*[_type == "newsItem"]{_id, title, publishedAt, body}',
+interface NewsItem {
+  _id: string;
+  title: string;
+  publishedAt: string;
+  body?: string;
+}
+
+interface Props {
+  item: NewsItem;
+}
+
+export const getStaticPaths = (async () => {
+  const items = await client.fetch<NewsItem[]>(
+    `*[_type == "newsItem"]{_id, title, publishedAt, body}`,
   );
-  return items.map((item: {_id: string; title: string; publishedAt: string; body?: string}) => ({
+  return items.map((item) => ({
     params: {id: item._id},
     props: {item},
   }));
-}
+}) satisfies GetStaticPaths;
 
 const {item} = Astro.props;
 ---
