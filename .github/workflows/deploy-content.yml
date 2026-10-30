@@ -103,7 +103,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   record:
     name: Record integrity manifest
-    needs: [resolve, build, deploy]          # differs
+    needs: [resolve, build, deploy]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     continue-on-error: true
@@ -113,7 +113,7 @@ jobs:
       - name: Check out the approved release
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.resolve.outputs.sha }}   # differs
+          ref: ${{ needs.resolve.outputs.sha }}
           persist-credentials: false
 
       - name: Download site artifact
@@ -124,7 +124,7 @@ jobs:
 
       - name: Build manifest
         env:
-          SHA: ${{ needs.resolve.outputs.sha }}   # differs
+          SHA: ${{ needs.resolve.outputs.sha }}
         run: bash scripts/make-manifest.sh dist "$SHA" > manifest.json
 
       - name: Publish manifest

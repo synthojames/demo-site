@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_URL: https://corp-site-demo.synthocmsdomaintest.workers.dev
+  SITE_URL: ${{ vars.SITE_URL }}
 
 jobs:
   verify:
