@@ -12,7 +12,7 @@ const items: NewsItem[] = await client.fetch(
   <h1>お知らせ</h1>
   <ul>
     {items.map((item) => (
-      <li>{item.publishedAt} {item.title}</li>
+      <li>{item.publishedAt} <a href={`/news/${item._id}/`}>{item.title}</a></li>
     ))}
   </ul>
 </Base>
