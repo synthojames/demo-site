@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro';
+import {client} from '../../lib/sanity';
+
+export async function getStaticPaths() {
+  const items = await client.fetch(
+    '*[_type == "newsItem"]{_id, title, publishedAt, body}',
+  );
+  return items.map((item: {_id: string; title: string; publishedAt: string; body?: string}) => ({
+    params: {id: item._id},
+    props: {item},
+  }));
+}
+
+const {item} = Astro.props;
+---
+<Base title={`${item.title} | 株式会社サンプルマーケット`}>
+  <p><a href="/news/">← お知らせ一覧</a></p>
+  <h1>{item.title}</h1>
+  <p>{item.publishedAt}</p>
+  {item.body && <p style="white-space: pre-line">{item.body}</p>}
+</Base>
