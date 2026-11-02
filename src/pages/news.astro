@@ -10,9 +10,9 @@ const items: NewsItem[] = await client.fetch(
 ---
 <Base title="お知らせ | 株式会社サンプルマーケット">
   <h1>お知らせ</h1>
-  <ul>
+  <ul class="news-list">
     {items.map((item) => (
-      <li>{item.publishedAt} <a href={`/news/${item._id}/`}>{item.title}</a></li>
+      <li><time datetime={item.publishedAt}>{item.publishedAt}</time> <a href={`/news/${item._id}/`}>{item.title}</a></li>
     ))}
   </ul>
 </Base>
