@@ -27,8 +27,8 @@ export const getStaticPaths = (async () => {
 const {item} = Astro.props;
 ---
 <Base title={`${item.title} | 株式会社サンプルマーケット`}>
-  <p><a href="/news/">← お知らせ一覧</a></p>
+  <p class="back"><a href="/news/">← お知らせ一覧</a></p>
   <h1>{item.title}</h1>
-  <p>{item.publishedAt}</p>
-  {item.body && <p style="white-space: pre-line">{item.body}</p>}
+  <p class="date"><time datetime={item.publishedAt}>{item.publishedAt}</time></p>
+  {item.body && <p class="body">{item.body}</p>}
 </Base>

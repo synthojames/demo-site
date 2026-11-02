@@ -1,0 +1,114 @@
+:root {
+  --text: #222;
+  --muted: #666;
+  --line: #ddd;
+  --link: #1a5fb4;
+  --bg: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+  line-height: 1.8;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: var(--link);
+}
+
+header,
+main,
+footer {
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+header {
+  border-bottom: 1px solid var(--line);
+}
+
+nav {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+nav a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav a:hover,
+nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+main {
+  flex: 1;
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+}
+
+h1 {
+  margin: 0 0 1.25rem;
+  font-size: 1.75rem;
+  line-height: 1.4;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+footer {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  color: var(--muted);
+}
+
+.news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.news-list li {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-list time,
+.date {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.back {
+  font-size: 0.9rem;
+}
+
+.body {
+  white-space: pre-line;
+}
+
+@media (max-width: 30rem) {
+  .news-list li {
+    flex-direction: column;
+    gap: 0;
+  }
+}
