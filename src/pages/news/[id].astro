@@ -3,11 +3,20 @@ import type {GetStaticPaths} from 'astro';
 import Base from '../../layouts/Base.astro';
 import {client} from '../../lib/sanity';
 
+interface NewsImage {
+  alt?: string;
+  asset?: {
+    url: string;
+    metadata: {dimensions: {width: number; height: number}};
+  };
+}
+
 interface NewsItem {
   _id: string;
   title: string;
   publishedAt: string;
   body?: string;
+  image?: NewsImage;
 }
 
 interface Props {
@@ -16,7 +25,10 @@ interface Props {
 
 export const getStaticPaths = (async () => {
   const items = await client.fetch<NewsItem[]>(
-    `*[_type == "newsItem"]{_id, title, publishedAt, body}`,
+    `*[_type == "newsItem"]{
+      _id, title, publishedAt, body,
+      image{alt, asset->{url, metadata{dimensions}}}
+    }`,
   );
   return items.map((item) => ({
     params: {id: item._id},
@@ -25,10 +37,29 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const {item} = Astro.props;
+const image = item.image?.asset ? item.image : undefined;
 ---
 <Base title={`${item.title} | 株式会社サンプルマーケット`}>
   <p class="back"><a href="/news/">← お知らせ一覧</a></p>
   <h1>{item.title}</h1>
   <p class="date"><time datetime={item.publishedAt}>{item.publishedAt}</time></p>
+  {image?.asset && (
+    <img
+      class="hero"
+      src={`${image.asset.url}?w=1200&auto=format`}
+      alt={image.alt ?? ''}
+      width={image.asset.metadata.dimensions.width}
+      height={image.asset.metadata.dimensions.height}
+    />
+  )}
   {item.body && <p class="body">{item.body}</p>}
 </Base>
+
+<style>
+  .hero {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1rem 0;
+  }
+</style>
